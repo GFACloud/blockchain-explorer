@@ -5,8 +5,14 @@ import actions from './actions';
 import { get } from '../../../services/request';
 
 /* istanbul ignore next */
+// from=Mon Oct 05 2020 16:18:30 GMT+0800 (中国标准时间)&&to=Fri Oct 23 2020 16:18:30 GMT+0800 (中国标准时间)
+const date = new Date();
+const fromYear = date.getFullYear();
+const fromMonth = date.getMonth();
+const fromDay = date.getDay();
+const time = 'from=' + new Date(fromYear, fromMonth, fromDay) + '&&to=' + date;
 const blockList = channel => dispatch =>
-	get(`/api/blockAndTxList/${channel}/0`)
+	get(`/api/blockAndTxList/${channel}/0?` + time)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -31,7 +37,6 @@ const blockListSearch = (channel, query) => dispatch =>
 		.catch(error => {
 			console.error(error);
 		});
-
 /* istanbul ignore next */
 const chaincodeList = channel => dispatch =>
 	get(`/api/chaincode/${channel}`)
@@ -125,7 +130,7 @@ const transactionListSearch = (channel, query) => dispatch =>
 
 /* istanbul ignore next */
 const transactionList = channel => dispatch =>
-	get(`/api/txList/${channel}/0/0/`)
+	get(`/api/txList/${channel}/0/0?` + time)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(

@@ -3,15 +3,17 @@
  */
 
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import { Row, Col } from 'reactstrap';
-import FontAwesome from 'react-fontawesome';
-import Card from '@material-ui/core/Card';
-import Avatar from '@material-ui/core/Avatar';
 import ChartStats from '../Charts/ChartStats';
-import PeersHealth from '../Lists/PeersHealth';
-import TimelineStream from '../Lists/TimelineStream';
-import OrgPieChart from '../Charts/OrgPieChart';
+
+// import { Row, Col } from 'reactstrap';
+// import FontAwesome from 'react-fontawesome';
+// import Card from '@material-ui/core/Card';
+// import Avatar from '@material-ui/core/Avatar';
+// import PeersHealth from '../Lists/PeersHealth';
+// import TimelineStream from '../Lists/TimelineStream';
+// import OrgPieChart from '../Charts/OrgPieChart';
 import {
 	blockListType,
 	dashStatsType,
@@ -19,13 +21,17 @@ import {
 	transactionByOrgType
 } from '../types';
 
+import '../../static/css/dashboard.css';
+import { Table } from 'element-react';
+import 'element-theme-default';
+
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
 		background: {
-			backgroundColor: dark ? 'rgb(36, 32, 54)' : '#f0f5f9'
+			backgroundColor: dark ? '#062348' : '#f0f5f9'
 		},
 		view: {
 			paddingTop: 85,
@@ -37,7 +43,8 @@ const styles = theme => {
 		blocks: {
 			height: 175,
 			marginBottom: 20,
-			backgroundColor: dark ? '#453e68' : '#ffffff',
+			marginTop: 10,
+			backgroundColor: dark ? '#062348' : '#ffffff',
 			boxShadow: dark ? '1px 2px 2px rgb(215, 247, 247)' : undefined
 		},
 		count: {
@@ -68,27 +75,34 @@ const styles = theme => {
 			marginLeft: '60%',
 			marginTop: '65%'
 		},
+		iconBackground: {
+			width: '40px',
+			height: '40px',
+			display: 'inline-block',
+			verticalAlign: 'middle',
+			textAlign: 'center',
+			borderRadius: '50%'
+		},
 		node: {
-			color: dark ? '#183a37' : '#21295c',
+			// color: dark ? '#183a37' : '#21295c',
 			backgroundColor: dark ? 'rgb(104, 247, 235)' : '#858aa6'
 		},
 		block: {
-			color: dark ? '#1f1a33' : '#004d6b',
+			// color: dark ? '#1f1a33' : '#004d6b',
 			backgroundColor: dark ? 'rgb(106, 156, 248)' : '#b9d6e1'
 		},
 		chaincode: {
-			color: dark ? 'rgb(121, 83, 109)' : '#407b20',
+			// color: dark ? 'rgb(121, 83, 109)' : '#407b20',
 			backgroundColor: dark ? 'rgb(247, 205, 234)' : '#d0ecda'
 		},
 		transaction: {
-			color: dark ? 'rgb(216, 142, 4)' : '#ffa686',
+			// color: dark ? 'rgb(216, 142, 4)' : '#ffa686',
 			backgroundColor: dark ? 'rgb(252, 224, 174)' : '#ffeed8'
 		},
 		section: {
-			height: 335,
 			marginBottom: '2%',
 			color: dark ? '#ffffff' : undefined,
-			backgroundColor: dark ? '#3c3558' : undefined
+			backgroundColor: dark ? '#062348' : undefined
 		},
 		center: {
 			textAlign: 'center'
@@ -101,27 +115,138 @@ export class DashboardView extends Component {
 		super(props);
 		this.state = {
 			notifications: [],
-			hasDbError: false
+			hasDbError: false,
+			blockColumns: [
+				{
+					label: '区块高度',
+					prop: 'blocknum',
+					width: 100
+				},
+				{
+					label: '通道名称',
+					prop: 'channelname',
+					width: 120
+				},
+				{
+					label: '交易数',
+					prop: 'txcount',
+					width: 90
+				},
+				{
+					label: '数据Hash',
+					prop: 'datahash'
+				},
+				{
+					label: '区块Hash',
+					className: 'id-color',
+					render: (row, column, index) => {
+						return (
+							<span onClick={this.blockDetails.bind(this, row.blockhash)}>
+								{row.blockhash}
+							</span>
+						);
+					}
+				},
+				{
+					label: '大小',
+					prop: 'blksize',
+					width: 120
+				}
+			],
+			blocksData: [],
+			transactionColumns: [
+				{
+					label: '发起方',
+					prop: 'creator_msp_id',
+					width: 130
+				},
+				{
+					label: '通道名称',
+					prop: 'channelname',
+					width: 130
+				},
+				{
+					label: '交易ID',
+					className: 'id-color',
+					render: (row, column, index) => {
+						return (
+							<span onClick={this.transactionDetails.bind(this, row.txhash)}>
+								{row.txhash}
+							</span>
+						);
+					}
+				},
+				{
+					label: '智能合约',
+					prop: 'chaincodename',
+					width: 130
+				},
+				{
+					label: '创建时间',
+					prop: 'createdt',
+					width: 210
+				}
+			],
+			transactionData: []
 		};
 	}
 
+	blockDetails = id => {
+		console.log(id);
+	};
+
+	transactionDetails = id => {
+		console.log(id);
+	};
 	componentWillMount() {
 		const {
 			blockList,
 			dashStats,
 			peerStatus,
+			transactionList,
 			transactionByOrg,
 			blockActivity
 		} = this.props;
+		// console.log(transactionList);
 		if (
 			blockList === undefined ||
 			dashStats === undefined ||
 			peerStatus === undefined ||
 			blockActivity === undefined ||
-			transactionByOrg === undefined
+			transactionByOrg === undefined ||
+			transactionList === undefined
 		) {
 			this.setState({ hasDbError: true });
 		}
+		const blocksData = [];
+		blockList.forEach((val, ind) => {
+			if (ind < 5) {
+				const blocksDataItem = {};
+				blocksDataItem.blocknum = val.blocknum;
+				blocksDataItem.channelname = val.channelname;
+				blocksDataItem.txcount = val.txcount;
+				blocksDataItem.datahash = val.datahash;
+				blocksDataItem.blockhash = val.blockhash;
+				blocksDataItem.blksize = val.blksize;
+				blocksData.push(blocksDataItem);
+			}
+		});
+		const txData = [];
+		transactionList.forEach((val, ind) => {
+			if (ind < 5) {
+				const txItem = {};
+				txItem.creator_msp_id = val.creator_msp_id;
+				txItem.channelname = val.channelname;
+				txItem.txhash = val.txhash;
+				txItem.chaincodename = val.chaincodename;
+				txItem.createdt = val.createdt;
+				txData.push(txItem);
+			}
+		});
+		this.setState({
+			blocksData: blocksData,
+			transactionData: txData
+		});
 	}
 
 	componentDidMount() {
@@ -155,8 +280,10 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
-		const { hasDbError, notifications } = this.state;
+		// const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
+		const { dashStats } = this.props;
+		// const { hasDbError, notifications } = this.state;
+		const { hasDbError } = this.state;
 		if (hasDbError) {
 			return (
 				<div
@@ -177,8 +304,122 @@ export class DashboardView extends Component {
 		const { classes } = this.props;
 		return (
 			<div className={classes.background}>
+				<div className="search-contaner">
+					<div className="search-content-container">
+						<h1 className="h1-title">国富安区块链浏览器</h1>
+						<div className="search-">
+							<input
+								type="text"
+								placeholder="区块 / 交易ID"
+								className="search-input"
+							/>
+							<button className="search-btn">查找</button>
+						</div>
+					</div>
+				</div>
 				<div className={classes.view}>
-					<Row>
+					<div className={classes.section}>
+						<h3 className="page-title">总览</h3>
+						<div className="overall-container">
+							<div className="linecharts-container">
+								<ChartStats />
+							</div>
+							<div className={`${classes.section} overall-info-container`}>
+								<div className="overall-info-line">
+									<div className="items-container">
+										<div className="top_">
+											<span className={`${classes.iconBackground} ${classes.block}`}>
+												<img
+													src={require('../../static/images/block.png')}
+													className="icons"
+												/>
+											</span>
+											<span className="item-count">{dashStats.latestBlock}</span>
+										</div>
+										<div className="bottom_">区块数</div>
+									</div>
+
+									<div className="items-container">
+										<div className="top_">
+											<span className={`${classes.iconBackground} ${classes.transaction}`}>
+												<img
+													src={require('../../static/images/transaction-icon-light.png')}
+													className="icons"
+												/>
+											</span>
+											<span className="item-count">{dashStats.txCount}</span>
+										</div>
+										<div className="bottom_">交易数</div>
+									</div>
+								</div>
+
+								<div className="overall-info-line">
+									<div className="items-container">
+										<div className="top_">
+											<span className={`${classes.iconBackground} ${classes.node}`}>
+												<img
+													src={require('../../static/images/node-icon-light.png')}
+													className="icons"
+												/>
+											</span>
+											<span className="item-count">{dashStats.peerCount}</span>
+										</div>
+										<div className="bottom_">节点数</div>
+									</div>
+
+									<div className="items-container">
+										<div className="top_">
+											<span className={`${classes.iconBackground} ${classes.chaincode}`}>
+												<img
+													src={require('../../static/images/chaincode-icon-dark.png')}
+													className="icons"
+												/>
+											</span>
+											<span className="item-count">{dashStats.chaincodeCount}</span>
+										</div>
+										<div className="bottom_">智能合约</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className={classes.section}>
+						<h3 className="page-title">
+							区块{' '}
+							<Link to="/blocks" className="show-more">
+								更多
+							</Link>
+						</h3>
+						<div className="block-container">
+							<Table
+								style={{ width: '100%' }}
+								columns={this.state.blockColumns}
+								data={this.state.blocksData}
+								stripe={true}
+								border={true}
+							/>
+						</div>
+					</div>
+
+					<div className="">
+						<h3 className="page-title">
+							交易{' '}
+							<Link to="/transactions" className="show-more">
+								更多
+							</Link>
+						</h3>
+						<div className="block-container">
+							<Table
+								style={{ width: '100%' }}
+								columns={this.state.transactionColumns}
+								data={this.state.transactionData}
+								stripe={true}
+								border={true}
+							/>
+						</div>
+					</div>
+
+					{/* <Row>
 						<Col sm="12">
 							<Card className={classes.blocks}>
 								<div className={`${classes.statistic} ${classes.vdivide}`}>
@@ -258,7 +499,7 @@ export class DashboardView extends Component {
 								<OrgPieChart transactionByOrg={transactionByOrg} />
 							</Card>
 						</Col>
-					</Row>
+					</Row> */}
 				</div>
 			</div>
 		);

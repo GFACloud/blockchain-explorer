@@ -22,7 +22,7 @@ const styles = (theme) => {
   const dark = type === 'dark';
   return {
     content: {
-      backgroundColor: dark ? '#3c3558' : undefined,
+      backgroundColor: dark ? '#042e66' : undefined,
       '& .recharts-layer': {
         fill: dark ? 'rgb(42, 173, 230) !important' : '#5bc5c2 !important',
       },

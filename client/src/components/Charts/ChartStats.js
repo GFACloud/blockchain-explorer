@@ -38,7 +38,7 @@ const styles = theme => {
 	return {
 		chart: {
 			color: dark ? '#ffffff' : undefined,
-			backgroundColor: dark ? '#453e68' : undefined
+			backgroundColor: dark ? '#042e66' : undefined
 		}
 	};
 };
@@ -127,7 +127,8 @@ export class ChartStats extends Component {
 								this.toggle('1');
 							}}
 						>
-							BLOCKS / HOUR
+							
+							区块 / 小时
 						</NavLink>
 					</NavItem>
 					<NavItem>
@@ -139,7 +140,7 @@ export class ChartStats extends Component {
 								this.toggle('2');
 							}}
 						>
-							BLOCKS / MIN
+							区块 / 分钟
 						</NavLink>
 					</NavItem>
 					<NavItem>
@@ -151,7 +152,7 @@ export class ChartStats extends Component {
 								this.toggle('3');
 							}}
 						>
-							TX / HOUR
+							交易 / 小时
 						</NavLink>
 					</NavItem>
 					<NavItem>
@@ -163,7 +164,7 @@ export class ChartStats extends Component {
 								this.toggle('4');
 							}}
 						>
-							TX / MIN
+							交易 / 分钟
 						</NavLink>
 					</NavItem>
 				</Nav>

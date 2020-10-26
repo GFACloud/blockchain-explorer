@@ -19,7 +19,7 @@ import Dialog from '@material-ui/core/Dialog';
 import Loader from 'react-loader-spinner';
 import Select from '../Styled/Select';
 import NotificationsPanel from '../Panels/NotificationsPanel';
-import Logo from '../../static/images/Explorer_Logo.svg';
+import Logo from '../../static/images/logo.png';
 import AdminPanel from '../Panels/AdminPanel';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
 import { tableOperations, tableSelectors } from '../../state/redux/tables';
@@ -46,6 +46,7 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
+import { Hidden } from '@material-ui/core';
 
 const {
 	blockPerHour,
@@ -74,11 +75,12 @@ const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	const darkNavbar = dark && {
-		background: 'linear-gradient(to right, rgb(236, 233, 252), #4d4575)'
+		// background: 'linear-gradient(to right, rgb(236, 233, 252), #4d4575)'
+		background: '#0c4887'
 	};
 	return {
 		logo: {
-			width: 260,
+			width: 123,
 			height: 50,
 			'@media (max-width: 1415px) and (min-width: 990px)': {
 				width: 200,
@@ -86,11 +88,12 @@ const styles = theme => {
 			}
 		},
 		navbarHeader: {
-			backgroundColor: '#e8e8e8',
+			backgroundColor: '#0c4887',
+			overflow: 'hidden',
 			...darkNavbar
 		},
 		tab: {
-			color: dark ? '#242036' : '#000000',
+			color: dark ? '#242036' : '#ffffff',
 			fontSize: '1.05rem',
 			fontWeight: 800,
 			height: 50,
@@ -134,7 +137,7 @@ const styles = theme => {
 			}
 		},
 		bell: {
-			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
+			color: dark ? 'rgb(139, 143, 148)' : 'orange',
 			fontSize: '18pt',
 			margin: 8,
 			float: 'none',
@@ -226,7 +229,7 @@ export class HeaderView extends Component {
 	}
 
 	componentDidMount() {
-		const { channels: channelArr , currentChannel } = this.props;
+		const { channels: channelArr, currentChannel } = this.props;
 		const arr = [];
 		let selectedValue = {};
 		channelArr.forEach(element => {
@@ -478,7 +481,7 @@ export class HeaderView extends Component {
 		} = this.state;
 		const links = [
 			{ to: '/', label: 'DASHBOARD', exact: true },
-			{ to: '/network', label: 'NETWORK' },
+			// { to: '/network', label: 'NETWORK' },
 			{ to: '/blocks', label: 'BLOCKS' },
 			{ to: '/transactions', label: 'TRANSACTIONS' },
 			{ to: '/chaincodes', label: 'CHAINCODES' },
@@ -499,7 +502,7 @@ export class HeaderView extends Component {
 						<Navbar className={classes.navbarHeader} expand="lg" fixed="top">
 							<NavbarBrand href="/">
 								{' '}
-								<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
+								<img src={Logo} className={classes.logo} alt="GFA Logo" />
 							</NavbarBrand>
 							<NavbarToggler onClick={this.toggle}>
 								<FontAwesome name="bars" className={classes.toggleIcon} />
