@@ -121,7 +121,6 @@ export const Main = props => {
 		transactionListSearch,
 		getTransactionListSearch
 	};
-
 	return (
 		<Router>
 			<div className={classes.main}>
@@ -130,7 +129,9 @@ export const Main = props => {
 						exact
 						path="/"
 						render={routeprops => (
-							<DashboardView {...{ ...dashboardViewProps, ...routeprops }} />
+							<DashboardView
+								{...{ ...dashboardViewProps, ...transactionsViewProps, ...routeprops }}
+							/>
 						)}
 					/>
 					<Private

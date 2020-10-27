@@ -515,6 +515,7 @@ export class Blocks extends Component {
 					}}
 					filtered={this.state.filtered}
 					onFilteredChange={filtered => {
+						console.log(filtered)
 						this.setState({ filtered });
 					}}
 					minRows={0}

@@ -1,0 +1,149 @@
+/* 搜索 */
+.search-contaner {
+	position: relative;
+	width: 100%;
+	min-height: 40vw;
+	background: url('../../static/images/bg.jpg');
+	background-position: top center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	font-family: Microsoft YaHei, Segoe UI, Tahoma, Arial, Verdana, sans-serif,
+		'新宋体';
+}
+.search-content-container {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 50%;
+	height: 200px;
+	box-sizing: border-box;
+}
+.h1-title {
+	text-align: center;
+	color: #ffffff;
+	font-family: BlinkMacSystemFont, Helvetica Neue, Helvetica, Arial, PingFang SC,
+		Hiragino Sans GB, Microsoft YaHei, sans-serif;
+}
+
+.search- {
+	width: 80%;
+	margin: 20px auto;
+}
+.search-input {
+	width: 80%;
+	vertical-align: middle;
+	outline: none;
+	height: 40px;
+	line-height: 40px;
+	text-indent: 1em;
+	border-radius: 8px;
+	box-shadow: none;
+	border-color: transparent;
+}
+.search-btn {
+	width: 15%;
+	height: 40px;
+	vertical-align: middle;
+	margin-left: 30px;
+	background: orange;
+	border-color: orange;
+	color: #ffffff;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+/* 总览 */
+.page-title {
+	margin-left: 5px;
+	font-weight: bolder;
+	margin-bottom: 15px;
+}
+.overall-container {
+	width: 100%;
+	/* background: #ffffff; */
+	margin-top: 10px;
+	margin-bottom: 30px;
+}
+.linecharts-container {
+	width: 45%;
+	display: inline-block;
+	vertical-align: top;
+}
+.overall-info-container {
+	width: 45%;
+	display: inline-block;
+	vertical-align: bottom;
+	height: 100%;
+	margin-left: 10%;
+}
+.overall-info-line {
+	width: 100%;
+	height: 50%;
+}
+.items-container {
+	width: 50%;
+	height: 150px;
+	display: inline-block;
+	vertical-align: middle;
+	/* background: #ffffff; */
+	border: 1px dashed #ccc;
+	box-sizing: border-box;
+}
+
+.bottom_ {
+	text-align: center;
+	margin-top: 5%;
+	font-size: 20px;
+	font-weight: bold;
+}
+.top_ {
+	text-align: center;
+	margin-top: 10%;
+}
+.icon-container {
+	width: 40px;
+	height: 40px;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	background: #b9d6e1;
+	border-radius: 50%;
+}
+.icons {
+	width: 30px;
+	height: 30px;
+	margin-top: 5px;
+}
+.item-count {
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 10px;
+	font-weight: bolder;
+	font-size: 20px;
+}
+.item-name {
+	text-align: center;
+}
+
+/* 区块 */
+.block-container {
+	width: 100%;
+	height: 350px;
+	box-sizing: border-box;
+	padding-bottom: 30px;
+}
+.show-more {
+	float: right;
+	font-size: 16px;
+	color: #1e90ff;
+	font-weight: normal;
+	line-height: 60px;
+	cursor: pointer;
+}
+
+/* table */
+.id-color {
+	color: #20a0ff;
+	cursor: pointer;
+}
