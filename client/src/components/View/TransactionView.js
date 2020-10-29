@@ -10,6 +10,7 @@ import { Table, Card, CardBody, CardTitle } from 'reactstrap';
 import JSONTree from 'react-json-tree';
 import { transactionType } from '../types';
 import Modal from '../Styled/Modal';
+import '../../static/css/transactionView.css'
 /* eslint-disable */
 const readTheme = {
 	base00: '#f3f3f3',
@@ -83,7 +84,7 @@ export class TransactionView extends Component {
 						<div>
 							<CardTitle className={modalClasses.title}>
 								<FontAwesome name="list-alt" className={classes.listIcon} />
-								Transaction Details
+								交易详情
 								<button
 									type="button"
 									onClick={this.handleClose}
@@ -113,7 +114,7 @@ export class TransactionView extends Component {
 							<Card className={modalClasses.card}>
 								<CardTitle className={modalClasses.title}>
 									<FontAwesome name="list-alt" className={classes.listIcon} />
-									Transaction Details
+									交易详情
 									<button
 										type="button"
 										onClick={this.handleClose}
@@ -126,7 +127,7 @@ export class TransactionView extends Component {
 									<Table striped hover responsive className="table-striped">
 										<tbody>
 											<tr>
-												<th>Transaction ID:</th>
+												<th>交易 ID:</th>
 												<td>
 													{transaction.txhash}
 													<button type="button" className={modalClasses.copyBtn}>
@@ -147,23 +148,25 @@ export class TransactionView extends Component {
 												<td>{transaction.payload_proposal_hash}</td>
 											</tr>
 											<tr>
-												<th>Creator MSP:</th>
+												{/* <th>Creator MSP:</th> */}
+												<th>创建方:</th>
 												<td>{transaction.creator_msp_id}</td>
 											</tr>
 											<tr>
-												<th>Endorser:</th>
+												{/* <th>Endorser:</th> */}
+												<th>背书方:</th>
 												<td>{transaction.endorser_msp_id}</td>
 											</tr>
 											<tr>
-												<th>Chaincode Name:</th>
+												<th>智能合约名称:</th>
 												<td>{transaction.chaincodename}</td>
 											</tr>
 											<tr>
-												<th>Type:</th>
+												<th>类型:</th>
 												<td>{transaction.type}</td>
 											</tr>
 											<tr>
-												<th>Time:</th>
+												<th>时间:</th>
 												<td>{transaction.createdt}</td>
 											</tr>
 											<tr>

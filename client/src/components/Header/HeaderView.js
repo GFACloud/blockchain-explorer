@@ -479,13 +479,20 @@ export class HeaderView extends Component {
 			registerOpen,
 			notifications
 		} = this.state;
+		// const links = [
+		// 	{ to: '/', label: 'DASHBOARD', exact: true },
+		// 	{ to: '/network', label: 'NETWORK' },
+		// 	{ to: '/blocks', label: 'BLOCKS' },
+		// 	{ to: '/transactions', label: 'TRANSACTIONS' },
+		// 	{ to: '/chaincodes', label: 'CHAINCODES' },
+		// 	{ to: '/channels', label: 'CHANNELS' }
+		// ];
 		const links = [
-			{ to: '/', label: 'DASHBOARD', exact: true },
-			// { to: '/network', label: 'NETWORK' },
-			{ to: '/blocks', label: 'BLOCKS' },
-			{ to: '/transactions', label: 'TRANSACTIONS' },
-			{ to: '/chaincodes', label: 'CHAINCODES' },
-			{ to: '/channels', label: 'CHANNELS' }
+			{ to: '/', label: '展示板', exact: true },
+			{ to: '/blocks', label: '区块' },
+			{ to: '/transactions', label: '交易' },
+			{ to: '/chaincodes', label: '智能合约' },
+			{ to: '/channels', label: '通道' }
 		];
 
 		return (

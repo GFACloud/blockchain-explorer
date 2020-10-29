@@ -13,24 +13,24 @@ const styles = theme => {
 	return {
 		multi: {
 			'& .multi-select': {
-				backgroundColor: dark ? '#7165ae !important' : undefined
+				backgroundColor: dark ? '#093c7b !important' : undefined
 			},
 			'& .multi-select .select-item': {
 				textAlign: 'left !important'
 			},
 			'& .dropdown ': {
-				backgroundColor: dark ? '#7165ae !important' : undefined
+				backgroundColor: dark ? '#093c7b !important' : undefined
 			},
 			'& .dropdown-heading': {
-				backgroundColor: dark ? '#7165ae !important' : undefined,
+				backgroundColor: dark ? '#093c7b !important' : undefined,
 				color: dark ? '#fff !important' : undefined
 			},
 			'& .multi-select * input': {
-				backgroundColor: dark ? '#7165ae! important' : undefined,
+				backgroundColor: dark ? '#093c7b! important' : undefined,
 				color: dark ? '#fff !important' : undefined
 			},
 			'& .multi-select .select-item,.dropdown-content': {
-				backgroundColor: dark ? '#7165ae !important' : undefined,
+				backgroundColor: dark ? '#093c7b !important' : undefined,
 				color: dark ? '#fff !important' : undefined
 			},
 			'& .multi-select .select-item:hover': {

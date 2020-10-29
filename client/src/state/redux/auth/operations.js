@@ -115,7 +115,6 @@ const unregister = user => dispatch =>
 const logout = () => dispatch =>
 	post('/auth/logout', {})
 		.then(resp => {
-			console.log(resp);
 			Auth.deauthenticateUser();
 			dispatch(errorAction(null));
 			return { status: 'Success' };

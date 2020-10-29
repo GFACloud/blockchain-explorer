@@ -7,7 +7,7 @@ import Slider from 'react-slick';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import Logo from '../../static/images/Explorer_Logo.svg';
+import Logo from '../../static/images/logo-color.png';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
 import { tableOperations } from '../../state/redux/tables';
 import { authOperations } from '../../state/redux/auth';
@@ -61,8 +61,8 @@ const styles = theme => {
 	const dark = type === 'dark';
 	/* eslint-disable */
 	dark
-		? (document.body.style.backgroundColor = '#242036')
-		: (document.body.style.backgroundColor = '#f0f5f9');
+		? (document.body.style.backgroundColor = '#062348')
+		: (document.body.style.backgroundColor = '#26acf5');
 	return {
 		background: {
 			backgroundColor: '#f0f5f9'
@@ -97,7 +97,7 @@ export class LandingPage extends Component {
 				slidesToScroll: 1
 			},
 			logoStyle: {
-				width: '520px',
+				width: '320px',
 				height: '100px'
 			},
 			hasDbError: false
@@ -176,7 +176,7 @@ export class LandingPage extends Component {
 		return (
 			<div className={classes.background}>
 				<div className={classes.content}>
-					<img src={Logo} style={logoStyle} alt="Hyperledger Logo" />
+					<img src={Logo} style={logoStyle} alt="GFA Logo" />
 					<Slider {...settings}>
 						<div>
 							<h3>ACCESSING THE NETWORK</h3>

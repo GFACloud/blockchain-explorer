@@ -4,8 +4,8 @@
 
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import clientJson from '../../../package.json';
-import FabricVersion from '../../FabricVersion';
+// import clientJson from '../../../package.json';
+// import FabricVersion from '../../FabricVersion';
 
 const styles = theme => {
 	const { type } = theme.palette;
@@ -15,7 +15,7 @@ const styles = theme => {
 			margin: '2%'
 		},
 		footer: {
-			backgroundColor: dark ? '#5e558e' : '#e8e8e8',
+			backgroundColor: dark ? '#062348' : '#e8e8e8',
 			color: dark ? '#ffffff' : undefined,
 			textAlign: 'center',
 			position: 'fixed',
@@ -30,10 +30,10 @@ const FooterView = ({ classes }) => (
 	<div className={classes.root}>
 		<div>
 			<div className={classes.footer}>
-				{'Hyperledger Explorer Client Version: '}
-				{clientJson.version}
+				{'北京国富安电子商务安全认证有限公司 '}
+				{/* {clientJson.version}
 				&emsp;
-				{'Fabric Compatibility: '} {FabricVersion.map(v => v)}
+				{'Fabric Compatibility: '} {FabricVersion.map(v => v)} */}
 			</div>
 		</div>
 	</div>
