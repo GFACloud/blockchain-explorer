@@ -12,8 +12,8 @@ const styles = (theme) => {
   return {
     fullwidth: {
       width: '100%',
-      marginTop: 105,
-      backgroundColor: dark ? 'rgb(36, 32, 54)' : '#f0f5f9',
+      paddingTop: 105,
+      backgroundColor: dark ? '#062348' : '#f0f5f9',
     },
     display: {
       display: 'block',
@@ -24,7 +24,7 @@ const styles = (theme) => {
     },
     card: {
       color: dark ? '#ffffff' : undefined,
-      backgroundColor: dark ? '#453e68' : undefined,
+      backgroundColor: dark ? '#093c7b' : undefined,
     },
   };
 };

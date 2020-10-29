@@ -33,16 +33,16 @@ const styles = theme => {
 				height: 36
 			},
 			'& .react-datepicker': {
-				backgroundColor: dark ? '#7165ae !important' : undefined
+				backgroundColor: dark ? '#093c7b !important' : undefined
 			},
 			'& .react-datepicker__time': {
-				backgroundColor: dark ? '#7165ae !important' : undefined
+				backgroundColor: dark ? '#093c7b !important' : undefined
 			},
 			'& .react-datepicker__header': {
-				backgroundColor: dark ? '#564d81 !important' : undefined
+				backgroundColor: dark ? '#093c7b !important' : undefined
 			},
 			'& .react-datepicker__input-container > input': {
-				background: dark ? '#7165ae' : undefined,
+				background: dark ? '#093c7b' : undefined,
 				color: dark ? '#ffffff' : undefined
 			}
 		}

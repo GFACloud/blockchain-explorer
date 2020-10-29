@@ -28,7 +28,7 @@ const styles = theme => {
 				textAlign: 'center'
 			},
 			'& .rt-th input': {
-				background: dark ? '#7165ad !important' : undefined,
+				background: dark ? '#788da8 !important' : undefined,
 				color: dark ? '#ffffff' : undefined
 			}
 		},
