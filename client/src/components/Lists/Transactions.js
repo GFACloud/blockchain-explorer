@@ -227,7 +227,7 @@ export class Transactions extends Component {
 				filterAll: true
 			},
 			{
-				Header: '交易 Id',
+				Header: '交易 Hash',
 				accessor: 'txhash',
 				className: classes.hash,
 				Cell: row => (

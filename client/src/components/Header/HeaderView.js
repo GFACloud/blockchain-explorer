@@ -46,7 +46,6 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
-import { Hidden } from '@material-ui/core';
 
 const {
 	blockPerHour,
@@ -89,7 +88,6 @@ const styles = theme => {
 		},
 		navbarHeader: {
 			backgroundColor: '#0c4887',
-			overflow: 'hidden',
 			...darkNavbar
 		},
 		tab: {

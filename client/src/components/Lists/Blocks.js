@@ -215,7 +215,6 @@ export class Blocks extends Component {
 			? this.props.blockListSearch
 			: this.props.blockList;
 		const data = find(blockList, item => item.blockhash === blockHash);
-
 		this.setState({
 			dialogOpenBlockHash: true,
 			blockHash: data
