@@ -25,6 +25,7 @@ const styles = (theme) => {
       '& .Select-menu-outer': {
         background: dark ? '#5a5379 !important' : undefined,
         color: dark ? '#ffffff !important' : undefined,
+        zIndex: 999
       },
       '& .Select-option': {
         background: dark ? '#453e68 !important' : undefined,

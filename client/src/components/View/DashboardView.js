@@ -3,9 +3,14 @@
  */
 
 import React, { Component } from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import find from 'lodash/find';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import ChartStats from '../Charts/ChartStats';
+import BlockView from '../View/BlockView';
+import TransactionView from '../View/TransactionView';
+import { searchType } from '../../const'
 
 // import { Row, Col } from 'reactstrap';
 // import FontAwesome from 'react-fontawesome';
@@ -18,7 +23,8 @@ import {
 	blockListType,
 	dashStatsType,
 	peerStatusType,
-	transactionByOrgType
+	transactionByOrgType,
+	transactionType
 } from '../types';
 
 import '../../static/css/dashboard.css';
@@ -141,7 +147,7 @@ export class DashboardView extends Component {
 					className: 'id-color',
 					render: (row, column, index) => {
 						return (
-							<span onClick={this.blockDetails.bind(this, row.blockhash)}>
+							<span onClick={() => this.handleDialogOpenBlockHash(row.blockhash)}>
 								{row.blockhash}
 							</span>
 						);
@@ -166,11 +172,11 @@ export class DashboardView extends Component {
 					width: 130
 				},
 				{
-					label: '交易ID',
+					label: '交易 Hash',
 					className: 'id-color',
 					render: (row, column, index) => {
 						return (
-							<span onClick={this.transactionDetails.bind(this, row.txhash)}>
+							<span onClick={() => this.handleDialogOpen(row.txhash)}>
 								{row.txhash}
 							</span>
 						);
@@ -187,17 +193,17 @@ export class DashboardView extends Component {
 					width: 210
 				}
 			],
-			transactionData: []
+			transactionData: [],
+			currentChannel: '',
+			dialogOpen: false,
+			dialogOpenBlockHash: false,
+			currentType: '交易',
+			chooseIcin: require('../../static/images/down.png'),
+			flag: false,
+			searchType: 'transaction'
 		};
 	}
 
-	blockDetails = id => {
-		console.log(id);
-	};
-
-	transactionDetails = id => {
-		console.log(id);
-	};
 	componentWillMount() {
 		const {
 			blockList,
@@ -205,16 +211,17 @@ export class DashboardView extends Component {
 			peerStatus,
 			transactionList,
 			transactionByOrg,
-			blockActivity
+			blockActivity,
+			currentChannel
 		} = this.props;
-		// console.log(transactionList);
 		if (
 			blockList === undefined ||
 			dashStats === undefined ||
 			peerStatus === undefined ||
 			blockActivity === undefined ||
 			transactionByOrg === undefined ||
-			transactionList === undefined
+			transactionList === undefined ||
+			currentChannel === undefined
 		) {
 			this.setState({ hasDbError: true });
 		}
@@ -245,7 +252,8 @@ export class DashboardView extends Component {
 		});
 		this.setState({
 			blocksData: blocksData,
-			transactionData: txData
+			transactionData: txData,
+			currentChannel: currentChannel
 		});
 	}
 
@@ -279,6 +287,74 @@ export class DashboardView extends Component {
 		this.setState({ notifications: notificationsArr });
 	};
 
+	handleSearch = async () => {
+		const id = this.input.value;
+		if (this.state.searchType === 'block') {
+			this.handleDialogOpenBlockHash(id)
+		} else if (this.state.searchType === 'transaction') {
+			if (id) {
+				const currentChannel = this.state.currentChannel
+				const { getTransaction } = this.props;
+				await getTransaction(currentChannel, id);
+				this.setState({ dialogOpen: true });
+			}
+		}
+	}
+
+	handleDialogOpen = async (id) => {
+		if (id) {
+			const currentChannel = this.state.currentChannel
+			const { getTransaction } = this.props;
+			const res = await getTransaction(currentChannel, id);
+			this.setState({ dialogOpen: true });
+		}
+	}
+
+	handleDialogClose = () => {
+		this.setState({ dialogOpen: false });
+	};
+
+	handleDialogCloseBlockHash = () => {
+		this.setState({ dialogOpenBlockHash: false });
+	};
+
+	handleDialogOpenBlockHash = blockHash => {
+		const blockList = this.state.search
+			? this.props.blockListSearch
+			: this.props.blockList;
+		const data = find(blockList, item => item.blockhash === blockHash);
+		this.setState({
+			dialogOpenBlockHash: true,
+			blockHash: data
+		});
+	};
+
+	handleChooseType = () => {
+		let flag;
+		flag = !this.state.flag
+		this.setState({
+			flag
+		})
+		if (flag) {
+			this.setState({
+				chooseIcin: require('../../static/images/up.png')
+			})
+		} else {
+			this.setState({
+				chooseIcin: require('../../static/images/down.png')
+			})
+		}
+		
+	}
+
+	chooseType = (e) => {
+		this.setState({
+			searchType: e.target.dataset.type,
+			flag: false,
+			currentType: searchType[e.target.dataset.type]
+		})
+	}
+
 	render() {
 		// const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
 		const { dashStats } = this.props;
@@ -301,20 +377,57 @@ export class DashboardView extends Component {
 				</div>
 			);
 		}
-		const { classes } = this.props;
+		const { transaction, classes } = this.props;
+		const { dialogOpen, dialogOpenBlockHash, blockHash, currentType, chooseIcin } = this.state;
 		return (
 			<div className={classes.background}>
 				<div className="search-contaner">
 					<div className="search-content-container">
 						<h1 className="h1-title">国富安区块链浏览器</h1>
 						<div className="search-">
+							<div className="choose-container">
+								<div onClick={this.handleChooseType}>
+									<span className="current-type">{currentType}</span>
+									<img src={chooseIcin} className="choose-icon" />
+								</div>
+								<div className="choose-items-container" onClick={this.chooseType}>
+									{
+										this.state.flag ? 
+										<div>
+											<div className="choose-items" data-type="block">区块</div>
+											<div className="choose-items"data-type="transaction">交易</div>
+										</div>
+										: null
+									}
+									
+								</div>
+							</div>
 							<input
 								type="text"
-								placeholder="区块 / 交易ID"
+								placeholder="区块 Hash / 交易 Hash"
 								className="search-input"
+								ref={input => this.input = input}
 							/>
-							<button className="search-btn">查找</button>
+							<button className="search-btn" onClick={ this.handleSearch }>查找</button>
 						</div>
+						<Dialog
+							open={dialogOpen}
+							onClose={this.handleDialogClose}
+							fullWidth
+							maxWidth="md">
+							<TransactionView
+								transaction={transaction}
+								onClose={this.handleDialogClose}/>
+						</Dialog>
+						<Dialog
+							open={dialogOpenBlockHash}
+							onClose={this.handleDialogCloseBlockHash}
+							fullWidth
+							maxWidth="md">
+							<BlockView
+								blockHash={blockHash}
+								onClose={this.handleDialogCloseBlockHash}/>
+						</Dialog>
 					</div>
 				</div>
 				<div className={classes.view}>
@@ -510,7 +623,8 @@ DashboardView.propTypes = {
 	blockList: blockListType.isRequired,
 	dashStats: dashStatsType.isRequired,
 	peerStatus: peerStatusType.isRequired,
-	transactionByOrg: transactionByOrgType.isRequired
+	transactionByOrg: transactionByOrgType.isRequired,
+	transaction: transactionType
 };
 
 export default withStyles(styles)(DashboardView);

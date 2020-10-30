@@ -127,7 +127,7 @@ export class TransactionView extends Component {
 									<Table striped hover responsive className="table-striped">
 										<tbody>
 											<tr>
-												<th>交易 ID:</th>
+												<th>交易 Hash:</th>
 												<td>
 													{transaction.txhash}
 													<button type="button" className={modalClasses.copyBtn}>

@@ -8,7 +8,7 @@ import { get } from '../../../services/request';
 // from=Mon Oct 05 2020 16:18:30 GMT+0800 (中国标准时间)&&to=Fri Oct 23 2020 16:18:30 GMT+0800 (中国标准时间)
 const date = new Date();
 const fromYear = date.getFullYear();
-const fromMonth = date.getMonth();
+const fromMonth = date.getMonth() - 1;
 const fromDay = date.getDay();
 const time = 'from=' + new Date(fromYear, fromMonth, fromDay) + '&&to=' + date;
 const blockList = channel => dispatch =>

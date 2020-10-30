@@ -104,6 +104,7 @@ export const Main = props => {
 		blockList,
 		dashStats,
 		peerStatus,
+		getTransaction,
 		transactionByOrg,
 		blockActivity
 	};
@@ -185,7 +186,6 @@ Main.propTypes = {
 	getTransaction: getTransactionType.isRequired,
 	peerList: peerListType.isRequired,
 	peerStatus: peerStatusType.isRequired,
-	transaction: transactionType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired,
 	transactionList: transactionListType.isRequired
 };

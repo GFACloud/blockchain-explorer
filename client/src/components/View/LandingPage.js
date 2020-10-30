@@ -97,7 +97,7 @@ export class LandingPage extends Component {
 				slidesToScroll: 1
 			},
 			logoStyle: {
-				width: '320px',
+				width: '280px',
 				height: '100px'
 			},
 			hasDbError: false
