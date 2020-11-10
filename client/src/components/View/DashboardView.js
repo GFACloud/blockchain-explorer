@@ -7,6 +7,7 @@ import Dialog from '@material-ui/core/Dialog';
 import find from 'lodash/find';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
+import 'element-theme-default';
 import ChartStats from '../Charts/ChartStats';
 import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
@@ -198,9 +199,12 @@ export class DashboardView extends Component {
 			dialogOpen: false,
 			dialogOpenBlockHash: false,
 			currentType: '交易',
-			chooseIcin: require('../../static/images/down.png'),
+			chooseIcon: require('../../static/images/down.png'),
+			closeIcon: require('../../static/images/close.png'),
 			flag: false,
-			searchType: 'transaction'
+			searchType: 'transaction',
+			message: '错误提示',
+			showMessage: false
 		};
 	}
 
@@ -287,6 +291,10 @@ export class DashboardView extends Component {
 		this.setState({ notifications: notificationsArr });
 	};
 
+	handleClear = () => {
+		this.input.value = ''
+	}
+
 	handleSearch = async () => {
 		const id = this.input.value;
 		if (this.state.searchType === 'block') {
@@ -323,12 +331,27 @@ export class DashboardView extends Component {
 			? this.props.blockListSearch
 			: this.props.blockList;
 		const data = find(blockList, item => item.blockhash === blockHash);
-		this.setState({
-			dialogOpenBlockHash: true,
-			blockHash: data
-		});
+		if (data) {
+			this.setState({
+				dialogOpenBlockHash: true,
+				blockHash: data
+			});
+		} else {
+			this.setState({
+				showMessage: true,
+				message: '区块不存在'
+			})
+			this.closeMessage()
+		}
 	};
-
+	closeMessage = () => {
+		setTimeout(() => {
+			this.setState({
+				showMessage: false,
+				message: ''
+			})
+		}, 2000)
+	}
 	handleChooseType = () => {
 		let flag;
 		flag = !this.state.flag
@@ -337,11 +360,11 @@ export class DashboardView extends Component {
 		})
 		if (flag) {
 			this.setState({
-				chooseIcin: require('../../static/images/up.png')
+				chooseIcon: require('../../static/images/up.png')
 			})
 		} else {
 			this.setState({
-				chooseIcin: require('../../static/images/down.png')
+				chooseIcon: require('../../static/images/down.png')
 			})
 		}
 		
@@ -354,7 +377,6 @@ export class DashboardView extends Component {
 			currentType: searchType[e.target.dataset.type]
 		})
 	}
-
 	render() {
 		// const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
 		const { dashStats } = this.props;
@@ -378,17 +400,20 @@ export class DashboardView extends Component {
 			);
 		}
 		const { transaction, classes } = this.props;
-		const { dialogOpen, dialogOpenBlockHash, blockHash, currentType, chooseIcin } = this.state;
+		const { dialogOpen, dialogOpenBlockHash, blockHash, currentType, chooseIcon, closeIcon } = this.state;
 		return (
 			<div className={classes.background}>
 				<div className="search-contaner">
+					{ this.state.showMessage ?
+					<div className="message">{this.state.message}</div>
+					: null }
 					<div className="search-content-container">
 						<h1 className="h1-title">国富安区块链浏览器</h1>
 						<div className="search-">
 							<div className="choose-container">
 								<div onClick={this.handleChooseType}>
 									<span className="current-type">{currentType}</span>
-									<img src={chooseIcin} className="choose-icon" />
+									<img src={chooseIcon} className="choose-icon" />
 								</div>
 								<div className="choose-items-container" onClick={this.chooseType}>
 									{
@@ -402,12 +427,16 @@ export class DashboardView extends Component {
 									
 								</div>
 							</div>
-							<input
-								type="text"
-								placeholder="区块 Hash / 交易 Hash"
-								className="search-input"
-								ref={input => this.input = input}
-							/>
+							<div className="search-input-container">
+								<input
+									type="text"
+									placeholder="区块 Hash / 交易 Hash"
+									className="search-input"
+									ref={input => this.input = input}
+								/>
+								<img src={closeIcon} className="close-Icon" onClick={ this.handleClear } />
+							</div>
+							
 							<button className="search-btn" onClick={ this.handleSearch }>查找</button>
 						</div>
 						<Dialog

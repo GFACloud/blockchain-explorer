@@ -24,7 +24,7 @@ import {
 	getTransactionType,
 	peerListType,
 	peerStatusType,
-	transactionType,
+	// transactionType,
 	transactionByOrgType,
 	transactionListType
 } from './types';

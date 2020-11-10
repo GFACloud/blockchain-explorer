@@ -10,6 +10,19 @@
 	font-family: Microsoft YaHei, Segoe UI, Tahoma, Arial, Verdana, sans-serif,
 		'新宋体';
 }
+.message {
+	position: absolute;
+	left: 50%;
+	top:20%;
+	transform: translateX(-50%);
+	width: 400px;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px;
+	color: #f56c6c;
+	background: #fef0f0;
+	border-radius: 5px;
+}
 .search-content-container {
 	position: absolute;
 	left: 50%;
@@ -67,16 +80,30 @@
 	color: #fff;
 	
 }
-.search-input {
+.search-input-container {
 	width: 60%;
 	vertical-align: middle;
-	outline: none;
+	display: inline-block;
 	height: 40px;
 	line-height: 40px;
-	text-indent: 1em;
 	border-radius: 8px;
+	background: #fff;
+}
+.search-input {
+	width: 90%;
+	outline: none;
+	height: 40px;
+	display: inline-block;
+	line-height: 40px;
+	text-indent: 1em;
 	box-shadow: none;
 	border-color: transparent;
+	border-radius: 8px 0 0 8px;
+}
+.close-Icon {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
 }
 .search-btn {
 	width: 15%;
