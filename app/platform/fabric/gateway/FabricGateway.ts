@@ -2,12 +2,11 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-import { Wallets, Gateway } from 'fabric-network';
+import { X509Identity, Wallets, Gateway } from 'fabric-network';
 import * as fabprotos from 'fabric-protos';
 import { Discoverer, DiscoveryService } from 'fabric-common';
 import concat from 'lodash/concat';
 import * as path from 'path';
-import * as fs from 'fs';
 import { helper } from '../../../common/helper';
 import { explorerError } from '../../../common/ExplorerMessage';
 import { ExplorerError } from '../../../common/ExplorerError';
@@ -28,9 +27,13 @@ export class FabricGateway {
 	defaultChannelName: string;
 	fabricCaEnabled: boolean;
 	client: any;
+	clientTlsIdentity: X509Identity;
 	FSWALLET: string;
 	enableAuthentication: boolean;
 	asLocalhost: boolean;
+	ds: DiscoveryService;
+	dsTargets: Discoverer[];
+	waitingResp: boolean;
 
 	/**
 	 * Creates an instance of FabricGateway.
@@ -47,9 +50,12 @@ export class FabricGateway {
 		this.gateway = new Gateway();
 		this.fabricCaEnabled = false;
 		this.client = null;
+		this.clientTlsIdentity = null;
 		this.FSWALLET = null;
 		this.enableAuthentication = false;
 		this.asLocalhost = false;
+		this.ds = null;
+		this.dsTargets = [];
 	}
 
 	async initialize() {
@@ -121,11 +127,11 @@ export class FabricGateway {
 				clientTlsIdentity: ''
 			};
 
-			if ('clientTlsIdentity' in this.config.client) {
+			const mTlsIdLabel = this.fabricConfig.getClientTlsIdentity();
+			if (mTlsIdLabel) {
 				logger.info('client TLS enabled');
-				const mTlsIdLabel = this.config.client.clientTlsIdentity;
-				const mTlsId = await this.wallet.get(mTlsIdLabel);
-				if (mTlsId !== undefined) {
+				this.clientTlsIdentity = await this.wallet.get(mTlsIdLabel);
+				if (this.clientTlsIdentity !== undefined) {
 					connectionOptions.clientTlsIdentity = mTlsIdLabel;
 				} else {
 					throw new ExplorerError(
@@ -137,7 +143,9 @@ export class FabricGateway {
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
 		} catch (error) {
-			logger.error(`${error}`);
+			logger.error(
+				`${explorerError.ERROR_1010}: ${JSON.stringify(error, null, 2)}`
+			);
 			throw new ExplorerError(explorerError.ERROR_1010);
 		}
 	}
@@ -191,13 +199,15 @@ export class FabricGateway {
 		}
 
 		try {
-			const caConfig = this.fabricConfig.getCertificateAuthorities();
-			const tlsCACert = fs.readFileSync(caConfig.serverCertPath, 'utf8');
-
-			const ca = new FabricCAServices(caConfig.caURL[0], {
-				trustedRoots: tlsCACert,
-				verify: false
-			});
+			const caName = this.config.organizations[this.fabricConfig.getOrganization()]
+				.certificateAuthorities[0];
+			const ca = new FabricCAServices(
+				this.config.certificateAuthorities[caName].url,
+				{
+					trustedRoots: this.fabricConfig.getTlsCACertsPem(caName),
+					verify: false
+				}
+			);
 
 			const enrollment = await ca.enroll({
 				enrollmentID: this.fabricConfig.getCaAdminUser(),
@@ -367,53 +377,100 @@ export class FabricGateway {
 		}
 	}
 
-	async getDiscoveryResult(channelName) {
+	async setupDiscoveryRequest(channelName) {
 		try {
 			const network = await this.gateway.getNetwork(channelName);
 			const channel = network.getChannel();
-			const ds = new DiscoveryService('be discovery service', channel);
-
-			const client = new Client('discovery client');
-			client.setTlsClientCertAndKey();
-
-			const mspID = this.config.client.organization;
-			const targets = [];
-			for (const peer of this.config.organizations[mspID].peers) {
-				const discoverer = new Discoverer(`be discoverer ${peer}`, client, mspID);
-				const url = this.config.peers[peer].url;
-				const pem = this.fabricConfig.getPeerTlsCACertsPem(peer);
-				let grpcOpt = {};
-				if ('grpcOptions' in this.config.peers[peer]) {
-					grpcOpt = this.config.peers[peer].grpcOptions;
-				}
-				const peer_endpoint = client.newEndpoint(
-					Object.assign(grpcOpt, {
-						url: url,
-						pem: pem
-					})
-				);
-				await discoverer.connect(peer_endpoint);
-				targets.push(discoverer);
-			}
+			this.ds = new DiscoveryService('be discovery service', channel);
 
 			const idx = this.gateway.identityContext;
 			// do the three steps
-			ds.build(idx);
-			ds.sign(idx);
-			await ds.send({
-				asLocalhost: this.asLocalhost,
-				refreshAge: 15000,
-				targets: targets
-			});
-
-			const result = await ds.getDiscoveryResults(true);
-			return result;
+			this.ds.build(idx);
+			this.ds.sign(idx);
 		} catch (error) {
-			logger.error(
-				`Failed to get discovery result from channel ${channelName} : `,
-				error
-			);
+			logger.error('Failed to set up discovery service for channel', error);
+			this.ds = null;
 		}
+	}
+
+	async getDiscoveryServiceTarget() {
+		const client = new Client('discovery client');
+		if (this.clientTlsIdentity) {
+			logger.info('client TLS enabled');
+			client.setTlsClientCertAndKey(
+				this.clientTlsIdentity.credentials.certificate,
+				this.clientTlsIdentity.credentials.privateKey
+			);
+		} else {
+			client.setTlsClientCertAndKey();
+		}
+
+		const targets: Discoverer[] = [];
+		const mspID = this.config.client.organization;
+		for (const peer of this.config.organizations[mspID].peers) {
+			const discoverer = new Discoverer(`be discoverer ${peer}`, client, mspID);
+			const url = this.config.peers[peer].url;
+			const pem = this.fabricConfig.getPeerTlsCACertsPem(peer);
+			let grpcOpt = {};
+			if ('grpcOptions' in this.config.peers[peer]) {
+				grpcOpt = this.config.peers[peer].grpcOptions;
+			}
+			const peer_endpoint = client.newEndpoint(
+				Object.assign(grpcOpt, {
+					url: url,
+					pem: pem
+				})
+			);
+			await discoverer.connect(peer_endpoint);
+			targets.push(discoverer);
+		}
+		return targets;
+	}
+
+	async sendDiscoveryRequest() {
+		let result;
+		try {
+			if (!this.waitingResp) {
+				this.waitingResp = true;
+				await this.ds.send({
+					asLocalhost: this.asLocalhost,
+					requestTimeout: 5000,
+					refreshAge: 15000,
+					targets: this.dsTargets
+				});
+				logger.info('Succeeded to send discovery request');
+			} else {
+				logger.info('Have already been sending a request');
+			}
+
+			result = await this.ds.getDiscoveryResults(true);
+		} catch (error) {
+			logger.warn('Failed to send discovery request for channel', error);
+			if (this.ds) {
+				this.ds.close();
+				this.ds = null;
+			}
+			result = null;
+		} finally {
+			this.waitingResp = false;
+		}
+		return result;
+	}
+
+	async getDiscoveryResult(channelName) {
+		if (!this.ds) {
+			await this.setupDiscoveryRequest(channelName);
+		}
+
+		if (!this.dsTargets.length) {
+			this.dsTargets = await this.getDiscoveryServiceTarget();
+		}
+
+		if (this.ds && this.dsTargets.length) {
+			const result = await this.sendDiscoveryRequest();
+			return result;
+		}
+
 		return null;
 	}
 }

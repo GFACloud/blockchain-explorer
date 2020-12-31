@@ -20,7 +20,7 @@
 
 Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open source utility to browse activity on the underlying blockchain network. Users have the ability to configure and build Hyperledger Explorer on MacOS and Ubuntu.
 
-**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it. 
+**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it.
 
 
 # Release Notes
@@ -54,7 +54,7 @@ And if you want to refer more detail of each configuration, please refer [README
 
 ## Start Hyperledger Fabric network
 
-In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/master/test_network.html).
+In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
 
 ## Configure
 
@@ -102,7 +102,7 @@ In this guide, we assume that you've already started test network by following [
               - ./config.json:/opt/explorer/app/platform/fabric/config.json
               - ./connection-profile:/opt/explorer/app/platform/fabric/connection-profile
               - ./organizations:/tmp/crypto
-              - walletstore:/opt/wallet
+              - walletstore:/opt/explorer/wallet
     ```
 
 * When you connect Explorer to your fabric network through bridge network, you need to set DISCOVERY_AS_LOCALHOST to false for disabling hostname mapping into localhost.
@@ -122,7 +122,7 @@ In this guide, we assume that you've already started test network by following [
 
 * Edit path to admin certificate and secret key in the connection profile (first-network.json). You need to specify with the absolute path on Explorer container.
 
-    ```json
+    ```
       "organizations": {
         "Org1MSP": {
           "adminPrivateKey": {
@@ -185,8 +185,8 @@ $ cd blockchain-explorer/app
 
 * Modify `app/explorerconfig.json` to update PostgreSQL database settings.
 
-    ```json
-    "postgreSQL": {
+    ```
+    "postgreSQL": "b" {
         "host": "127.0.0.1",
         "port": "5432",
         "database": "fabricexplorer",
@@ -311,16 +311,16 @@ $ npm install
 $ npm run build
 ```
 
-## Run Hyperledger Explorer 
+## Run Hyperledger Explorer
 
 ### Run Locally in Same Location
 
 * Modify `app/explorerconfig.json` to update sync settings.
 
-    ```json
-    "sync": {
+    ```
+    "sync": "{
       "type": "local"
-    }   
+    }"
     ```
 
 * `npm start`
@@ -339,10 +339,10 @@ $ DISCOVERY_AS_LOCALHOST=false npm start
 
 * Modify `app/explorerconfig.json` to update sync settings.
 
-    ```json
+    ```
     "sync": {
       "type": "host"
-    }   
+    }
     ```
 
 * If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching
